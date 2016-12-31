@@ -1,4 +1,6 @@
 * Bananagrams Competition
+NB: GitHub has some incorrect rendering of org files, so not everything in this document will display correctly
+
 ** Spec
 *** The host
 The program that manages the game and spawns the player processes.

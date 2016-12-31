@@ -1,0 +1,78 @@
+* Bananagrams Competition
+** Spec
+*** The host
+The program that manages the game and spawns the player processes.
+
+It must behave fairly (specifics are determined by agreement of the players' developers).
+
+#+BEGIN_SRC sh
+ ./host player1 player2 ... playern
+
+ # Each argument will be run verbatim in a sh-compatible shell, so: 
+ ./host "ruby /path/to/a/ruby/player.rb" "/a/binary/player --some-argument"
+#+END_SRC
+*** Communication with the host
++ Read stdin, write stdout.
++ All printable ascii characters, no whitespace.
+
+*** Unresolved issues
+A race condition if a player peels before it is aware of another player's peel.
+
+Perhaps there should be sequence numbering, shared between all players, for peels. The server would need to ACK or NAK peels. And all of a sudden, the really simple host-to-player protocol is all complicated. Also, do we want to deal with more base-10 numbers, or should I give up on human-readability?
+
+*** The protocol 
+In these examples: 
++ =>= shows player to host
++ =<= shows host to player 
++ There are no whitespace characters
+
+
+**** Initial communications
+The player may perform arbitrary initialisation at process startup. When it is ready to play:
+: > r
+
+Now the host may start the game by sending the player's intial hand in alphabetical order.
+: < EEEGGKLOOPZ
+
+**** Peeling or winning the game
+Send ~p~ followed by a [[Grid][grid]]:
+: > p003003ANDN..T..
+
+All players will receive a new letter:
+: < R
+
+**** Dropping
+Host response is in alphabetical order
+: > dQ
+: < AEZ
+
+**** Process termination
+If the game is over, or the player has been determined by the host to have made a protocol error or an illegal move, the player shall be sent ~SIGTERM~ and must gracefully terminate.
+
+**** <<Grid>>
+The grid is the space in which a player builds their words. It is represented as follows:
+: xxxyyy[row_1][row_2]...[row_yyy]
+
+Where:
++ ~xxx~ and ~yyy~ are base-10 integers, comprising 3 ascii digits each, padded with leading zeroes if necessary
++ ~xxx~ represents the width in columns of the grid
++ ~yyy~ represents the height in rows of the grid
++ ~[row_n]~ matches ~^[A-Z.]{xxx}$~, and represents a row of the grid, left-to-right, with a ~.~ representing a grid cell with no tile in it.
++ The square brackets around ~[row_n]~ are for illustrative purposes and are illegal
++ Empty rows and columns are legal
+
+For example, ~003005..AHERA.TT.YE..~ is legal, contains the words "hate", "her", and "arty", and could be visually represented as:
+|   |   | A |
+| H | E | R |
+| A |   | T |
+| T |   | Y |
+| E |   |   |
+
+~006007..........A...HER...A.T...T.Y...E.........~ is also legal and contains the same words in the same arrangment as above. It could be visually represented as:
+|   |   |   |   |   |   |
+|   |   |   |   | A |   |
+|   |   | H | E | R |   |
+|   |   | A |   | T |   |
+|   |   | T |   | Y |   |
+|   |   | E |   |   |   |
+|   |   |   |   |   |   |

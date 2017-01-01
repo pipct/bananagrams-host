@@ -33,20 +33,20 @@ In these examples:
 The player may perform arbitrary initialisation at process startup. When it is ready to play:
 : > r
 
-Now the host may start the game by sending the player's intial hand in alphabetical order.
-: < EEEGGKLOOPZ
+Now the host may start the game by sending the player's intial hand in alphabetical order (length determined by host, ~.~-terminated).
+: < EEEGGKLOOPZ.
 
 **** Peeling or winning the game
 Send ~p~ followed by a [[Grid][grid]]:
 : > p003003ANDN..T..
 
 All players will receive a new letter:
-: < R
+: < R.
 
 **** Dropping
 Host response is in alphabetical order
 : > dQ
-: < AEZ
+: < AEZ.
 
 **** Process termination
 If the game is over, or the player has been determined by the host to have made a protocol error or an illegal move, the player shall be sent ~SIGTERM~ and must gracefully terminate.

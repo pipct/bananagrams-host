@@ -1,0 +1,9 @@
+[package]
+name = "bananagrams-host"
+version = "0.1.0"
+authors = ["Jamie McClymont <jamie.mcclymont@gmail.com>"]
+publish = false
+license = "Apache-2.0"
+readme = "README.org"
+
+[dependencies]
